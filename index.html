@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript MCQ Exam</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .exam-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .options label:hover {
+            background-color: #f8f8f8;
+        }
+        .options input {
+            margin-right: 8px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: #e6ffe6;
+            border-color: #4CAF50;
+        }
+        .wrong {
+            background-color: #ffe6e6;
+            border-color: #ff0000;
+        }
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="exam-container">
+    <h1>JavaScript MCQ Exam</h1>
+    <div id="quiz"></div>
+    <button id="submitBtn" onclick="submitExam()">Submit Exam</button>
+    
+    <div class="results" id="results">
+        <div class="score" id="score"></div>
+        <div id="result-questions"></div>
+        <button onclick="location.reload()">Retake Exam</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { question: "Which HTML tag is used to include JavaScript code?", options: ["<javascript>", "<js>", "<script>", "<code>"], answer: 2, explanation: "<script> tag is used to include JavaScript code inside HTML." },
+        { question: "Which method displays an alert box with a message?", options: ["console.log()", "alert()", "prompt()", "document.write()"], answer: 1, explanation: "alert() displays a popup alert box with a message." },
+        { question: "Which method writes content directly into an HTML document?", options: ["document.innerHTML", "document.write()", "alert()", "prompt()"], answer: 1, explanation: "document.write() writes directly to the HTML document." },
+        { question: "Which method is mainly used for debugging in JavaScript?", options: ["alert()", "console.log()", "document.write()", "debug.print()"], answer: 1, explanation: "console.log() is used to print messages and variables for debugging." },
+        { question: "Which method is used to get an element by its ID?", options: ["getElementByName()", "getElementById()", "querySelectorAll()", "getElement()"], answer: 1, explanation: "document.getElementById(id) fetches an element with a specific ID." },
+        { question: "Which method is used to take user input through a popup box?", options: ["alert()", "prompt()", "confirm()", "input()"], answer: 1, explanation: "prompt() displays a dialog box that asks the user for input." },
+        { question: "Which keyword is used to declare a constant variable in JavaScript?", options: ["var", "let", "const", "static"], answer: 2, explanation: "const keyword declares a constant that cannot be reassigned." },
+        { question: "What is the output of '5' + 3 in JavaScript?", options: ["8", "53", "Error", "NaN"], answer: 1, explanation: "When adding a string and number, JavaScript concatenates them as a string." },
+        { question: "Which operator is used to find the remainder of division?", options: ["%", "/", "//", "mod"], answer: 0, explanation: "% is the modulus operator that returns the remainder." },
+        { question: "Which operator has the highest precedence?", options: ["+", "*", "/", "++"], answer: 3, explanation: "Increment (++) and Decrement (--) have the highest precedence." },
+        { question: "Which statement executes code only if a condition is true?", options: ["for", "if", "else", "while"], answer: 1, explanation: "if statement runs code when the condition is true." },
+        { question: "Which JavaScript operator is called the ternary operator?", options: ["??", "?:", "&&", "||"], answer: 1, explanation: "?: is the ternary (conditional) operator." },
+        { question: "Which comparison operator checks for both value and type?", options: ["==", "===", "!=", "!=="], answer: 1, explanation: "=== checks for both value and type equality." },
+        { question: "Which logical operator returns true only if both conditions are true?", options: ["&&", "||", "!", "&"], answer: 0, explanation: "&& is logical AND operator." },
+        { question: "Which loop is best when the number of iterations is known?", options: ["while", "for", "do...while", "foreach"], answer: 1, explanation: "for loop is preferred when you know the iteration count." },
+        { question: "Which statement is used to exit from a loop immediately?", options: ["stop", "break", "return", "exit"], answer: 1, explanation: "break exits the loop instantly." },
+        { question: "What is the first index of a JavaScript array?", options: ["0", "1", "-1", "Depends"], answer: 0, explanation: "JavaScript arrays are zero-indexed." },
+        { question: "Which keyword is used to define a function?", options: ["function", "def", "func", "method"], answer: 0, explanation: "Functions are defined using the function keyword." },
+        { question: "Which statement returns a value from a function?", options: ["stop", "break", "return", "exit"], answer: 2, explanation: "return statement sends a value back to the caller." },
+        { question: "Which built-in method returns the length of a string?", options: ["len()", "count()", "length", "size()"], answer: 2, explanation: "length property gives the string length." },
+        { question: "Which method removes whitespace from both ends of a string?", options: ["strip()", "trim()", "clean()", "removeSpace()"], answer: 1, explanation: "trim() removes leading and trailing spaces." },
+        { question: "Which method converts a string to uppercase?", options: ["toUpperCase()", "upper()", "caseUpper()", "makeUpper()"], answer: 0, explanation: "toUpperCase() converts a string to uppercase." },
+        { question: "Which function evaluates a string as JavaScript code?", options: ["parse()", "eval()", "exec()", "codeRun()"], answer: 1, explanation: "eval() executes a string as JavaScript code." },
+        { question: "Which event attribute runs JavaScript when a button is clicked?", options: ["onhover", "onclick", "onpress", "onsubmit"], answer: 1, explanation: "onclick runs when the element is clicked." },
+        { question: "Which method changes an element's attribute value?", options: ["setAttr()", "setAttribute()", "changeAttr()", "modifyAttribute()"], answer: 1, explanation: "setAttribute(name, value) changes element attributes." },
+        { question: "Which JavaScript library is known for DOM manipulation?", options: ["React", "Angular", "jQuery", "Vue"], answer: 2, explanation: "jQuery is mainly used for DOM manipulation." },
+        { question: "Which HTML5 element is used to draw graphics with JavaScript?", options: ["<canvas>", "<draw>", "<paint>", "<graphics>"], answer: 0, explanation: "<canvas> is used for drawing graphics." },
+        { question: "Which canvas method is used to fill a rectangle with color?", options: ["drawRect()", "fillRect()", "colorRect()", "paintRect()"], answer: 1, explanation: "fillRect(x, y, width, height) fills a colored rectangle." },
+        { question: "Which property changes the background color of an element?", options: ["style.color", "backgroundColor", "style.background", "bgcolor"], answer: 2, explanation: "style.background changes the background of an element." },
+        { question: "Which mouse event occurs when the pointer is moved over an element?", options: ["onmouseover", "onclick", "onmouseenter", "onhover"], answer: 0, explanation: "onmouseover triggers when the mouse enters an element." }
+    ];
+
+    let userAnswers = new Array(questions.length).fill(-1);
+
+    function initializeQuiz() {
+        const quiz = document.getElementById('quiz');
+        quiz.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const qWrap = document.createElement('div');
+            qWrap.className = 'question';
+
+            const p = document.createElement('p');
+            p.textContent = `${index + 1}. ${q.question}`;
+            qWrap.appendChild(p);
+
+            const opts = document.createElement('div');
+            opts.className = 'options';
+
+            q.options.forEach((option, i) => {
+                const label = document.createElement('label');
+
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `q${index}`;
+                input.value = i;
+
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(option));
+
+                opts.appendChild(label);
+            });
+
+            qWrap.appendChild(opts);
+            quiz.appendChild(qWrap);
+        });
+    }
+
+    function submitExam() {
+        // collect answers
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            if (selected) userAnswers[index] = parseInt(selected.value, 10);
+        });
+
+        // score + results
+        let score = 0;
+        const resultsContainer = document.getElementById('result-questions');
+        resultsContainer.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const isCorrect = userAnswers[index] === q.answer;
+            if (isCorrect) score++;
+
+            const item = document.createElement('div');
+            item.className = `result-item ${isCorrect ? 'correct' : 'wrong'}`;
+
+            // Question line with bold label + safe text
+            const qLine = document.createElement('p');
+            const strong = document.createElement('strong');
+            strong.textContent = `Question ${index + 1}: `;
+            qLine.appendChild(strong);
+            qLine.appendChild(document.createTextNode(q.question));
+            item.appendChild(qLine);
+
+            // Your answer
+            const yourAns = document.createElement('p');
+            const your = userAnswers[index] >= 0 ? q.options[userAnswers[index]] : 'Not answered';
+            yourAns.textContent = `Your answer: ${your}`;
+            item.appendChild(yourAns);
+
+            // Correct answer
+            const correct = document.createElement('p');
+            correct.textContent = `Correct answer: ${q.options[q.answer]}`;
+            item.appendChild(correct);
+
+            // Explanation
+            const expl = document.createElement('p');
+            expl.textContent = `Explanation: ${q.explanation}`;
+            item.appendChild(expl);
+
+            resultsContainer.appendChild(item);
+        });
+
+        // show results
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('score').textContent = `Score: ${score}/${questions.length}`;
+    }
+
+    window.onload = initializeQuiz;
+</script>
+</body>
+</html>
